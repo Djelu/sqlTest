@@ -7,14 +7,7 @@ public class DB {
     private ResultSet resultSet;
     final int COLUMNS_WIDTH = 15;
 
-    public static void main(String[] args){
-        db = new DB();
-        db.connect();
-        for(int i = 1; i<=5; i++) db.tasksExecution(i);
-        db.disconnect();
-    }
-
-    private void disconnect(){
+    void disconnect(){
         try {
             resultSet.close();
             statement.close();
@@ -109,25 +102,31 @@ public class DB {
         for(int i=0; i<colsCount*COLUMNS_WIDTH; i++) sb.append("-");
         sb.append("\n");
 
-        while (resultSet.next()){
-            //записываем строки
-            for(int i=0,intCell; i<colsCount; i++){
-                String sCell = "";
+        while (resultSet.next()){//построчно записываем
+            int iCell;
+            float fCell;
+            String str;
+            for(int i=0; i<colsCount; i++){
+                str = "";
                 switch (colsTypes[i]){
                     case 4:{//INTEGER
-                        intCell= resultSet.getInt(i+1);
-                        sCell = resultSet.wasNull() ?"NULL" :String.valueOf(intCell);
+                        iCell= resultSet.getInt(i+1);
+                        str = resultSet.wasNull() ?"NULL" :String.valueOf(iCell);
+                    }break;
+                    case 6:{//FLOAT
+                        fCell= resultSet.getFloat(i+1);
+                        str = resultSet.wasNull() ?"NULL" :String.valueOf(fCell);
                     }break;
                     case 12:{//VARCHAR
-                        sCell = resultSet.getString(i+1);
-                        if(resultSet.wasNull()) sCell = "NULL";
+                        str = resultSet.getString(i+1);
+                        if(resultSet.wasNull()) str = "NULL";
                     }break;
                     case 91:{//DATE
-                        sCell = resultSet.getString(i+1);
-                        if(resultSet.wasNull()) sCell = "NULL";
+                        str = resultSet.getString(i+1);
+                        if(resultSet.wasNull()) str = "NULL";
                     }break;
                 }
-                sb.append(normalize(sCell,COLUMNS_WIDTH));//приводим к выбранной ширине
+                sb.append(normalize(str,COLUMNS_WIDTH));//приводим к выбранной ширине
             }
             sb.append("\n");
         }
