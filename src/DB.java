@@ -1,7 +1,6 @@
 import java.sql.*;
 
 public class DB {
-    static DB db;
     private Connection connection;
     private Statement statement;
     private ResultSet resultSet;
